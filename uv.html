@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='preconnect' href='https://fonts.googleapis.com'>
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+    <link href='https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&family=Roboto:ital,wght@0,500;1,700&display=swap' rel='stylesheet'>
+    <style>
+        .rrad-card * {
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .rrad-card .rrad-index-card {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+            background-color: #fff;
+            border-radius: 30px;
+            box-shadow: 1px 2px 5px gray;
+            overflow: hidden;
+            height:230px;
+            width:280px
+        }
+
+        .rrad-card .rrad-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .rrad-card .rrad-index-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            width: 70%;
+            height: 40%;
+        }
+
+        .rrad-card .rrad-icon-uv {
+            position: relative;
+            animation-name: rslideImage;
+            animation-duration: 2s;
+            animation-timing-function: ease-out;
+            width: 45px;
+            height: 45px;
+        }
+
+        @keyframes rslideImage {
+            0% {
+                width: 2px;
+                height: 2px;
+            }
+
+            100% {
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        .rrad-card .rrad-uv {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .rrad-card .rcontainer-alert-uv {
+            height: 60px;
+            display: flex;
+            justify-content: baseline;
+            align-items: center;
+        }
+
+        .rrad-card .ruv-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 5px;
+            animation-name: rpulse;
+            animation-timing-function: linear;
+            animation-duration: 1.5s;
+            animation-iteration-count: infinite;
+        }
+
+        .rrad-card .rrad-alert {
+            margin-right: 40px;
+        }
+
+        @keyframes rpulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class='rrad-card'>
+        <div class='rrad-index-card'>
+            <p class='rrad-title'>Índice UV</p>
+            <div class='rrad-index-container'>
+                <img src='https://farol.recife.pe.gov.br/wp-content/uploads/2023/12/hot-1.png' alt='' class='rrad-icon-uv'>
+                <p class='rrad-uv' id='ruv-idx'></p>
+                <p class='rrad-uv'>UV</p>
+            </div>
+            <div class='rcontainer-alert-uv'>
+                <h2 style='color: #333;' class='rrad-alert'></h2>
+                <div class='ruv-color'></div>
+            </div>
+            <div class='online-offline' style='display: none;'>
+                <p id='offline' style='margin: 0;'></p>
+                <p id='infoOffline' style='margin-top: 0; margin-bottom: 10px;'></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const getUV = 'https://esigportal2.recife.pe.gov.br/arcgis/rest/services/COP/BASES_TABELAS_COP_CONSULTA/FeatureServer/9/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnExceededLimitFeatures=false&quantizationParameters=&returnCentroid=false&timeReferenceUnknownClient=false&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=pjson';
+        const uvIdx = document.querySelector('#ruv-idx');
+        let uv = 0;
+        fetch(getUV)
+            .then(res => res.json())
+            .then(({ features }) => features)
+            .then(features => {
+                return features.filter(({ attributes }) => new Date(attributes.DT_ATUALIZA).getFullYear() === new Date().getFullYear() && new Date(attributes.DT_ATUALIZA).getMonth() === new Date().getMonth() && new Date(attributes.DT_ATUALIZA).getDate() === new Date().getDate());
+            })
+            .then(features => features[0].attributes)
+            .then(radiationData => {
+                uv = 1//radiationData.UV;
+                uvIdx.innerHTML = uv;
+
+                const uvAlert = document.querySelector('.rrad-alert');
+                const uvColor = document.querySelector('.ruv-color');
+                if (uv <= 2) {
+                    uvAlert.innerHTML = 'Normal';
+                    uvColor.style.backgroundColor = '#39F74E';
+                    uvColor.style.boxShadow = '3px 1px 10px 12px #39F74E';
+                } else if (uv > 2 && uv <= 5) {
+                    uvAlert.innerHTML = 'Moderado';
+                    uvColor.style.backgroundColor = '#39F74E';
+                    uvColor.style.boxShadow = '3px 1px 10px 12px #39F74E';
+                } else if (uv > 5 && uv <= 7) {
+                    uvAlert.innerHTML = 'Alto';
+                    uvColor.style.backgroundColor = '#fca10b';
+                    uvColor.style.boxShadow = '3px 1px 10px 12px #fca10b';
+                } else if (uv > 7 && uv <= 10) {
+                    uvAlert.innerHTML = 'Muito Alto';
+                    uvColor.style.backgroundColor = '#FF0010';
+                    uvColor.style.boxShadow = '3px 1px 10px 12px #FF0010';
+                } else if (uv > 11) {
+                    uvAlert.innerHTML = 'Extremo';
+                    uvColor.style.backgroundColor = '#B701FF';
+                    uvColor.style.boxShadow = '3px 1px 10px 12px #B701FF';
+                }
+            });
+    </script>
+</body>
+</html>

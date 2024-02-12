@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='preconnect' href='https://fonts.googleapis.com'>
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+    <link href='https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&family=Roboto:ital,wght@0,500;1,700&display=swap' rel='stylesheet'>
+    <style>
+         .t-card * {
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .t-card .traffic-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background-color: #fff;
+            border-radius: 30px;
+            box-shadow: 1px 2px 5px gray;
+            overflow: hidden;
+            height:230px;
+            width:280px
+        }
+
+        .t-card p {
+            font-size: 1.2rem;
+        }
+
+        .t-card .traffic-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .t-card .text-traffic > .m-traffic {
+            font-size: 1.8rem;
+          	font-weight: bold;
+            margin-right: 20px;
+        }
+
+        .t-card .traffic {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-container {
+            margin-top: -50px;
+        }
+
+        .c-icon {
+            width: 50px;
+            width: 50px;
+        }
+
+        .text-traffic {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .car-container {
+            display: flex;
+            justify-content: center;
+            align-items: ce;
+            padding: 15px;
+            border-radius: 10px;
+        }
+      
+      .traf-title {
+       		font-weight: bold;
+      }
+
+    </style>
+</head>
+<body>
+    <div class='t-card'>
+        <div class='traffic-card'>
+            <p class='traf-title'>Trânsito na Cidade</p>
+            <div class='traffic-container'>
+                <div class='traffic'>
+                    <div class='text-traffic'>
+                        <p class='m-traffic'></p>
+                    </div>
+                    <div class='car-container'>
+                        <img src='https://farol.recife.pe.gov.br/wp-content/uploads/2024/01/front-car-1.png' alt='' class='c-icon'>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        fetch('https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Geoevent/BASES_FEEDS_WAZE_5MINUTOS/MapServer/1/query?where=1%3D1&text=&objectIds=&time=&timeRelation=esriTimeRelationOverlaps&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&sqlFormat=none&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=pjson')
+        .then(res => res.json())
+        .then( ({ features }) => features)
+        .then( trafficDatas => {
+            let lengthCongestion = 0.0
+            
+            const recifeTrafficData = trafficDatas.filter( tf  => {
+                return tf.attributes.CITY === 'Recife' && 
+                tf.attributes.LEVEL !== 1 && 
+                tf.attributes.LEVEL !== 5 &&
+                new Date(tf.attributes.LAST_EDITED_DATE).getDate() === new Date().getDate()
+            })
+            
+            recifeTrafficData.forEach( ({ attributes, geometry }) => {
+                lengthCongestion+=attributes.LENGTH
+            });
+
+            const cc = document.querySelector('.car-container')
+            const tl = document.querySelector('.m-traffic')
+
+            lengthCongestion = lengthCongestion/1000
+
+            if (lengthCongestion < 100 ){
+                tl.innerHTML = 'Leve'
+                cc.style.backgroundColor =  '#3dcf3d'
+            } else if (lengthCongestion >= 100 && lengthCongestion < 190 ) {
+                cc.style.backgroundColor =  '#FFD700'
+                tl.innerHTML = 'Moderado'
+            } else if (lengthCongestion >= 190 && lengthCongestion < 280 ) {
+                cc.style.backgroundColor =  '#FF8C00'
+                tl.innerHTML = 'Intenso'
+            } else if (lengthCongestion >= 280 ) {
+                cc.style.backgroundColor =  '#E20202'
+                tl.innerHTML = 'Parado'
+            } 
+        })
+    </script>
+   </body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<link rel='preconnect' href='https://fonts.googleapis.com'>
+<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+<link href='https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&family=Roboto:ital,wght@0,500;1,700&display=swap' rel='stylesheet'>
+<style>
+     .m-unique-card * {
+        color: #333333;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .m-unique-card .card {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        background-color: #FFF;
+        border-radius: 30px;
+        box-shadow: 1px 2px 5px gray;
+        overflow: hidden;
+        height:230px;
+        width:280px
+    }
+
+    .m-unique-card p {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .m-unique-card .t-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .m-unique-card .tide > .m-tide {
+        font-size: 2rem;
+        margin-right: 30px;
+    }
+
+    .m-unique-card .tide {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .m-unique-card .icon {
+        position: relative;
+        width: 50px;
+        height: 50px;
+        animation-name: slideImage;
+        animation-duration: 2s;
+        animation-timing-function: ease-out;
+    }
+
+    @keyframes slideImage {
+        0% {
+            width: 2px;
+            height: 2px;
+        }
+
+        100% {
+            width: 40px;
+            height: 40px;
+        }
+    }
+
+    .w-container {
+        position: relative;
+        margin-top: -70px;
+        bottom: -20px;
+        width: 100%;
+        height: 120px;
+    }
+
+    .wave-up {
+        position: relative;     
+        opacity: 0.7;
+        width: 100%;
+        height: 100%;
+        margin-bottom: -10px;
+        animation: pulse 3s linear infinite, subindo linear 10s;
+    }
+
+    .wave-down {
+        position: relative;     
+        opacity: 0.7;
+        width: 100%;
+        height: 100%;
+        margin-bottom: -10px;
+        animation: pulse 3s linear infinite, descendo 10s linear 1s forwards;
+    }
+
+    .level-container {
+          z-index: 1;
+        display: flex;
+        align-items: center;
+    }
+
+    .ud {
+        position: relative;
+        margin-left: 20px;
+        width: 30px;
+        height: 30px;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes subindo {
+        0% {
+            top: 100px;
+        }
+        100% {
+            top: 0;
+        }
+    }
+
+    @keyframes descendo {
+        0% {
+            top: 0px;
+        }
+        100% {
+            top: 80px;
+        }
+    }
+
+</style>
+</head>
+<body>
+<div class='m-unique-card'>
+    <div class='card'>
+        <p>Nível das Marés</p>
+        <div class='t-container'>
+            <div class='tide'>
+                <p class='m-tide'></p>
+                <img src='https://farol.recife.pe.gov.br/wp-content/uploads/2023/12/tide-2.png' alt='chuva' class='icon'>
+            </div>
+            <div class='level-container'>
+                <p class='level'></p>
+                <img src='#' alt='' class='ud'>
+            </div>
+        </div>
+        <div class='w-container'>
+            <img src='https://farol.recife.pe.gov.br/wp-content/uploads/2023/12/sea.png' alt='' id='wa'>
+        </div>
+    </div>
+</div>
+<script>
+    fetch('https://esigportal2.recife.pe.gov.br/arcgis/rest/services/COP/BASES_TABELAS_COP_CONSULTA/FeatureServer/4/query?where=DATAHORA+Between+current_timestamp+-1+and+current_timestamp+%2B1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnCentroid=false&timeReferenceUnknownClient=false&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=pjson')
+    .then( res => res.json())
+    .then( ({ features }) => features )
+    .then( events => {
+        let indexBetweenTides = -1
+
+        for(let i = 0; i < events.length; i++) { 
+            const day = events[i].attributes.DATAHORA
+            if(new Date(day).getDate() === new Date().getDate()) {
+                const currentHour = ((new Date().getHours() * 60) + new Date().getMinutes())/60
+                const beforeHour = ((new Date(events[i].attributes.DATAHORA).getHours() * 60) + new Date(events[i].attributes.DATAHORA).getMinutes())/60
+                const afterHour = ((new Date(events[i+1].attributes.DATAHORA).getHours() * 60) + new Date(events[i+1].attributes.DATAHORA).getMinutes())/60
+                if(currentHour >= beforeHour && currentHour <= afterHour) {
+                    indexBetweenTides = i
+                    break
+                }
+            }
+        }
+        //recupera dos dados de marés de ontem, hoje e amanhã
+        const before = events[indexBetweenTides].attributes
+        const after = events[indexBetweenTides + 1].attributes
+        //maré de hoje e ontem
+        //calcula a diferença pra ver se a maré está subindo ou descendo
+        const lastTide = before.MARE
+        const nextTide = after.MARE
+
+        const diferenceTide =  lastTide - nextTide
+        const tideDirection =  diferenceTide > 0 ? 'Descendo' : 'Subindo'
+
+        const imageWave = document.getElementById('wa')
+        if(tideDirection === 'Descendo') {
+            imageWave.classList.add('wave-down')
+        }else {
+            imageWave.classList.add('wave-up')
+        }
+
+        const lv = document.querySelector('.level')
+        lv.innerHTML = tideDirection
+
+        const upOrDown = document.querySelector('.ud')
+        upOrDown.setAttribute('src', tideDirection === 'Descendo' ? 'https://farol.recife.pe.gov.br/wp-content/uploads/2024/01/b-down.png' : 'https://farol.recife.pe.gov.br/wp-content/uploads/2024/01/b-up.png')
+
+        //data em horas de ontem e amanhã
+        const beforeHourInMinutes = (new Date(before.DATAHORA).getHours()*60) + new Date(before.DATAHORA).getMinutes()
+        const afterHourInMinutes =  (new Date(after.DATAHORA).getHours()*60) + new Date(after.DATAHORA).getMinutes()
+        const beforeHour = beforeHourInMinutes / 60
+        const afterHour = afterHourInMinutes / 60
+        
+        //calcula a diferença das datas (como valor absoluto)
+        const diferenceBetweenHours = afterHour - beforeHour
+
+        //calcula a variação de maré por hora
+        const tideVariationPerHour = Math.abs(diferenceTide)/diferenceBetweenHours
+
+        //clacula a difereça pra verificar o incremento
+        const hourDiferenceNowToLast = ((new Date().getHours()*60 + new Date().getMinutes())/60 )- beforeHour
+        const sumOrNotTideResult = tideVariationPerHour * hourDiferenceNowToLast
+                   
+        const mTideLevel = document.querySelector('.m-tide')
+        //verificar se realmente precisa do incremento 
+        //maré subindo soma, descendo subtrai
+        const tideIncrement = tideDirection === 'Subindo' ? sumOrNotTideResult : (-1 * sumOrNotTideResult)
+        const finalTide = before.MARE + tideIncrement
+        mTideLevel.innerHTML =`${finalTide. toFixed(1).replace('.', ',')}m`
+    })
+</script>
+</body>
+</html>

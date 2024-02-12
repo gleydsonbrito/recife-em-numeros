@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const lat = -8.053970369420083
+        const lng = -34.872186596281516
+        const params = 'uvIndex';
+
+        fetch(`https://api.stormglass.io/v2/solar/point?lat=${lat}&lng=${lng}&params=${params}`, {
+        headers: {
+            'Authorization': '4e85d9ca-983b-11ee-b7a8-0242ac130002-4e85da2e-983b-11ee-b7a8-0242ac130002'
+        }
+        })
+        .then((response) => response.json())
+        .then((jsonData) => {
+            console.log(jsonData)
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='preconnect' href='https://fonts.googleapis.com'>
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+    <link href='https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&family=Roboto:ital,wght@0,500;1,700&display=swap' rel='stylesheet'>
+    <style>
+         .vt-card * {
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .vt-card .vtraffic-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background-color: #fff;
+            border-radius: 30px;
+            box-shadow: 1px 2px 5px gray;
+            overflow: hidden;
+            height:230px;
+            width:280px
+        }
+
+        .vt-card p {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .vt-card .vtraffic-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            width: 70%;
+        }
+
+        .vt-card .vtraffic > .vm-traffic {
+            font-size: 2rem;
+            margin-right: 20px;
+            margin-top: -9px;
+        }
+
+        .vt-card .traffic {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vt-card .vt-icon {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            animation-name: slideImage;
+            animation-duration: 2s;
+            animation-timing-function: ease-out;
+        }
+
+        @keyframes slideImage {
+            0% {
+                width: 2px;
+                height: 2px;
+            }
+
+            100% {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        .vtsign {
+            margin-top: -10px;
+            margin-bottom: -40px;
+            width: 120px;
+        }
+
+        .vinfo-container {
+            margin-top: -50px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class='vt-card'>
+        <div class='vtraffic-card'>
+            <p>Vias Interditadas</p>
+            <div class='vtraffic-container'>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        fetch('https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Geoevent/BASES_FEEDS_WAZE_1HORA/FeatureServer/1/query?where=CITY+%3D+%27Recife%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnExceededLimitFeatures=false&quantizationParameters=&returnCentroid=false&timeReferenceUnknownClient=false&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=pjson')
+        .then(res => res.json())
+        .then( ({ features }) => features)
+        .then( trafficDatas => {
+            let speedkm = 0.0
+            let countStreets = 0
+            let lengthCongestion = 0.0
+            let trafficLevel = 0
+            let bannedStreet = []
+            
+            if(trafficDatas.length > 0){
+                trafficDatas.forEach( ({ attributes, geometry }) => {
+                    if(new Date(attributes.PUBMILLIS).getHours() === new Date().getHours()){
+                            countStreets+=1
+                            speedkm+=attributes.SPEEDKMH
+                            lengthCongestion+=attributes.LENGTH
+                            trafficLevel+=attributes.LEVEL
+    
+                            if(attributes.LEVEL === 5) {
+                                bannedStreet.push({name: attributes.STREET, coords: geometry.paths[0]})
+                        }
+                    }
+                });
+            }
+            let uniqueBannedStreets = []
+
+            console.log(bannedStreet.length)
+
+            bannedStreet.forEach(street => {
+                const sn = street.name
+                if(uniqueBannedStreets.length === 0){
+                    uniqueBannedStreets.push(street)
+                }
+                bannedStreet = bannedStreet.filter( bs => bs.name !== sn)
+            })
+
+            const titleBannedStreets = document.createElement('H4')
+            titleBannedStreets.appendChild(document.createTextNode(`Na última hora: ${uniqueBannedStreets.length}`))
+            titleBannedStreets.style.color = '#333'
+            titleBannedStreets.style.fontStyle = 'normal'
+            const tc = document.querySelector('.vtraffic-container')
+            tc.appendChild(titleBannedStreets)
+
+
+            if (uniqueBannedStreets.length > 0) {
+                
+                uniqueBannedStreets.forEach( street => {
+                    console.log(bannedStreet)
+                    const divContainer = document.createElement('div')
+                    divContainer.style.width = '100%'
+                    divContainer.style.height = '40px'
+                    divContainer.style.display = 'flex'
+                    divContainer.style.justifyContent = 'space-between'
+                    divContainer.style.alignItems = 'center'
+ 
+                    
+                    const streeName = document.createElement('p')
+                    streeName.appendChild(document.createTextNode(street.name))
+                    streeName.style.fontSize = '0.9rem'
+                    streeName.style.fontWeight = 'normal'
+                    divContainer.appendChild(streeName)
+
+                    const [long, lat] = street.coords[0]
+                    const mapLink = document.createElement('a')
+                    mapLink.setAttribute('href', `https://maps.google.com/?q=${lat},${long}`)
+
+                    mapLink.setAttribute('target', '_blank')
+
+                    const iconStreet = document.createElement('img')
+                    iconStreet.setAttribute('src', 'https://farol.recife.pe.gov.br/wp-content/uploads/2023/12/gmaps.png')
+                    iconStreet.style.width = '35px'
+                    iconStreet.style.height = '35px'
+                    
+                    mapLink.appendChild(iconStreet)
+                    divContainer.appendChild(mapLink)
+                    tc.appendChild(divContainer)
+                })
+            }
+        })
+    </script>
+   </body>
+</html>

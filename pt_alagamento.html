@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='preconnect' href='https://fonts.googleapis.com'>
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+    <link href='https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&family=Roboto:ital,wght@0,500;1,700&display=swap' rel='stylesheet'>
+    <style>
+        .unique-card-flood * {
+            color: #333333;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .unique-card-flood .card {
+            display: flex;
+            align-items: center;
+          	justify-content: center;
+            flex-direction: column;
+            background-color: #FFF;
+            border-radius: 30px;
+            box-shadow: 1px 2px 5px gray;
+            height:230px;
+            width:280px
+        }
+
+        .unique-card-flood p {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .unique-card-flood .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .unique-card-flood .flood > p {
+            font-size: 3rem;
+            margin-right: 30px;
+        }
+
+        .unique-card-flood .flood {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .unique-card-flood img {
+            position: relative;
+            width: 80px;
+            height: 80px;
+          	margin-bottom: 10px;
+            animation-name: slideImage;
+            animation-duration: 2s;
+            animation-timing-function: ease-in-out;
+        }
+
+        @keyframes slideImage {
+            0% {
+                width: 2px;
+                height: 2px;
+            }
+
+            100% {
+                width: 80px;
+            	height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class='unique-card-flood'>
+        <div class='card'>
+            <p>Alagamentos</p>
+            <div class='container'>
+                <div class='flood'>
+                    <p class='flood-pt-count'></p>
+                    <img src='https://farol.recife.pe.gov.br/wp-content/uploads/2023/12/alg.gif' alt='chuva' class='icon'>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const floodEndpoint  = 'https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Geoevent/BASES_FEEDS_WAZE_1HORA//MapServer/0/query?where=1+%3D+1&text=&objectIds=&time=&timeRelation=esriTimeRelationOverlaps&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&sqlFormat=none&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=pjson'
+        let floodPoints = 0.0
+
+        fetch(floodEndpoint)
+        .then( res => res.json())
+        .then( data => console.log(data.features))
+        /*.then( feat => feat.filter( e => e.attributes.SUBTYPE === 'HAZARD_WEATHER_FLOOD') )
+        .then( floodList => {
+            const qtFlood = document.querySelector('.flood-pt-count')
+            qtFlood.innerHTML = floodList.length
+            return
+        } )*/
+    </script>
+</body>
+</html>

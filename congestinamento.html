@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='preconnect' href='https://fonts.googleapis.com'>
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+    <link href='https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&family=Roboto:ital,wght@0,500;1,700&display=swap' rel='stylesheet'>
+    <style>
+         .tct-card * {
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .tct-card .tctraffic-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 30px;
+            box-shadow: 1px 2px 5px gray;
+            overflow: hidden;
+            height:230px;
+            width:280px
+        }
+
+        .tct-card .titleC {
+          	margin-bottom: 40px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+
+        .ct-icons {
+            width: 60px;
+            height: 50px;
+            animation-name: slideImage;
+            animation-duration: 2s;
+            animation-timing-function: ease-out;
+        }
+
+        @keyframes slideImage {
+            0% {
+                width: 2px;
+                height: 2px;
+            }
+
+            100% {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        .tct-info-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .text-congestion {
+			font-size: 2rem;
+          	font-weight: bold;
+          	margin-right: 10px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class='tct-card'>
+        <div class='tctraffic-card'>
+            <p class='titleC'>Tamanho do Congestionamento</p>
+            <div class='tcinfo-container'>
+                <div class='tct-info-container'>
+                    <p class='text-congestion'></p>
+                    <img src='https://farol.recife.pe.gov.br/wp-content/uploads/2023/12/traffic-jam.png' alt='' class='ct-icons'>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const mainCities = ['Av. Dr. José Rufino' ,
+                            'Av. Gen. San Martin' ,
+                            'R. Pe. Teófilo Tworz',
+                            'Av. Rui Barbosa ',
+                            'Av. Antônio de Góes - Pista Sul', 
+                            'Av. Norte Miguel Arraes de Alencar',
+                            'R. Dr. Severino Pinheiro',
+                            'Av. Caxangá',
+                            'Av. Eng. Abdias de Carvalho', 
+                            'Av. Mal. Mascarenhas de Morais', 
+                            'R. de Apipucos', 
+                            'R. Dois Irmãos', 
+                            'Av. Gov. Agamenon Magalhães - Pista Lateral', 
+                            'V. Mangue', 
+                            'Av. Recife', 
+                            'Est. do Bongi', 
+                            'Av. Gov. Agamenon Magalhães - Pista Central',
+                            'Av. Eng. Abdias de Carvalho',
+                            'Av. Norte Miguel Arraes de Alencar',
+                            'Av. Cons. Rosa e Silva',
+                            'R. Real da Torre',
+                            'Est. dos Remédios',
+                            'BR-101 Rod. Gov. Mário Covas']
+
+        fetch('https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Geoevent/BASES_FEEDS_WAZE_5MINUTOS/MapServer/1/query?where=1%3D1&text=&objectIds=&time=&timeRelation=esriTimeRelationOverlaps&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&sqlFormat=none&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=pjson')
+        .then(res => res.json())
+        .then( ({ features }) => features)
+        .then( trafficDatas => {
+            let speedkm = 0.0
+            let countStreets = 0
+            let lengthCongestion = 0.0
+            let trafficLevel = 0
+            let bannedStreet = []
+            
+            const recifeTrafficData = trafficDatas.filter( tf  => {
+                return tf.attributes.CITY === 'Recife' && 
+                tf.attributes.LEVEL !== 1 && 
+                tf.attributes.LEVEL !== 5 &&
+                new Date(tf.attributes.LAST_EDITED_DATE).getDate() === new Date().getDate()
+            })
+            
+            recifeTrafficData.forEach( ({ attributes, geometry }) => {
+                lengthCongestion+=attributes.LENGTH
+            });
+
+            const mc = document.querySelector('.text-congestion')
+            const output = (lengthCongestion/1000).toFixed(1) + ' km'
+            mc.innerHTML = output.replace('.', ',')
+        })
+    </script>
+   </body>
+</html>

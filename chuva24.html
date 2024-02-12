@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='preconnect' href='https://fonts.googleapis.com'>
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+    <link href='https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&family=Roboto:ital,wght@0,500;1,700&display=swap' rel='stylesheet'>
+    <style>
+         .unique-card * {
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .unique-card .card {
+            display: flex;
+            align-items: center;
+          justify-content: center;
+            flex-direction: column;
+            background-color: #fff;
+            border-radius: 30px;
+            box-shadow: 1px 2px 5px gray;
+            height:230px;
+            width:280px
+        }
+
+        .unique-card p {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .unique-card .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .unique-card .rain > p {
+            font-size: 2rem;
+            margin-right: 30px;
+        }
+
+        .unique-card .rain {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .unique-card .icon {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            animation-name: slideImage;
+            animation-duration: 2s;
+            animation-timing-function: ease-out;
+        }
+
+        @keyframes slideImage {
+            0% {
+                width: 2px;
+                height: 2px;
+            }
+
+            100% {
+                width: 80px;
+            	height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class='unique-card'>
+        <div class='card'>
+            <p>Chuvas em 24 Horas</p>
+            <div class='container'>
+                <div class='rain'>
+                    <p class='mm-rain'></p>
+                    <img src='https://farol.recife.pe.gov.br/wp-content/uploads/2023/12/mrain.gif' alt='chuva' class='icon'>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const mmRainEndpoint  = 'https://esigportal2.recife.pe.gov.br/arcgis/rest/services/SEPLAG/BASES_PLUVIOMETRO_CEMADEN_ESTACOES/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&timeRelation=esriTimeRelationOverlaps&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&sqlFormat=none&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=pjson'
+        let mmRain = 0.0
+        let qtWaterStations = 0
+
+        fetch(mmRainEndpoint)
+        .then( res => res.json())
+        .then( data => data.features)
+        .then( feat => feat.filter( e => e.attributes['DBD2ESRI.ESI2.FCPLUVIOMETRO_ESTACAO.CIDADE'] === 'RECIFE') )
+        .then( recifeWaterStations => {
+            recifeWaterStations.forEach( att => {
+                let mmTemp = att.attributes['DBD2ESRI.ESI2.TBCEMADENESTACAO_HIST.ACC24HR']
+                if(typeof mmTemp === 'number') {
+                    mmRain += parseFloat(mmTemp)
+                    qtWaterStations += 1 
+                }
+            });
+            const qtMM = document.querySelector('.mm-rain')
+            const meanMM = parseFloat(mmRain / qtWaterStations)
+            qtMM.innerHTML = `${meanMM.toFixed(1).replace('.', ',')} mm`
+        } )
+
+    </script>
+</body>
+</html>

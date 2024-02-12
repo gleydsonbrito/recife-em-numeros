@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <script>
+        fetch('https://farol.recife.pe.gov.br/wp-json/pharol/v1/obras', {
+        method: 'GET',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: JSON_to_URLEncoded('user=gleydson.brito&password=Farol123@')
+        })
+        .then( res => res.json())
+        .then( res => {
+            res.forEach(element => {
+                console.log(element)
+            });
+        })
+    </script>
+</body>
+</html>
