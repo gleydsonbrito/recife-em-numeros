@@ -102,13 +102,20 @@
             height: 90%;
         }
 
+        .round {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
     </style>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap" rel="stylesheet">
-    <title>Document</title>
+    <title>Painel Recife em Números</title>
    
 </head>
 <body>
@@ -128,7 +135,9 @@
         <iframe class="ifbi" id='a' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSectionbeb142b90091e4b74cc4' frameborder='0'></iframe>
         <div class="plano-de-fundo">
             <div class="iframe-container">
-                <iframe class="ifbi" id='e' src='https://esigportal2.recife.pe.gov.br/portal/apps/dashboards/a70b013c87494ae180c9b01887ae22f7' frameborder='0'></iframe> 
+                <div class="round">
+                    <iframe class="ifbi" id='e' src='https://esigportal2.recife.pe.gov.br/portal/apps/dashboards/a70b013c87494ae180c9b01887ae22f7' frameborder='0'></iframe> 
+                </div>
             </div>
         </div>
     </div>
