@@ -8,7 +8,9 @@
             font-family: 'Noto Sans', sans-serif;
         }
 
-        .container {
+        .panel {
+            display: flex;
+            justify-content: center;
             width: 100%;
             height: 100vh;
         }
@@ -17,8 +19,9 @@
             width: 100%;
             height: 100%;
         }
-        #a, #b, #c, #d, #e {
+        #a, #b, #c, #d {
             display: none;
+            z-index: 3;
             position: absolute;
             top: 0;
             left: 0;
@@ -106,7 +109,7 @@
             font-size: 1.2rem;
             color: #817B7B;
             position: fixed;
-            z-index: 1;
+            z-index: 3;
             bottom: 13%;
             left: 2%;
         }
@@ -118,7 +121,7 @@
 
         .controllers {
             position: fixed;
-            z-index: 2;
+            z-index: 4;
             bottom: 8%;
             left: 2%;
             width: 100px;
@@ -131,22 +134,28 @@
             width: 20px;
             height: 20px;
         }
-
-        .box {
-            position: fixed;
-            bottom: 5%;
-            width: 10%;
-            height: 11%;
-            background-color: #FFF;
-            border-radius: 20px;
-        }
-
         .timer-icon {
             width: 30px;
             height: 30px;
             position: absolute;
             left: 70%;
             bottom: 150%;
+        }
+
+        .plano-de-fundo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 75%;
+            height: 100%;
+            background-image: url(fundo_recife_em_numeros.jpg);
+        }
+
+        .iframe-container {
+            display: flex;
+            justify-content: center;
+            width: 85%;
+            height: 90%;
         }
 
     </style>
@@ -159,20 +168,27 @@
    
 </head>
 <body>
-    <div class="box"></div>
-    <div class="controllers">
-        <img id="backward" class="ctrl" src="backward.png" alt="">
-        <img id="pause" class="ctrl" src="pause.png" alt="">
-        <img id="forward" class="ctrl" src="forward.png" alt="">
-        <div class="clock"></div>
-        <img src="./timer.png" alt="" class="timer-icon">
+    <div class="panel">
+        <div class="box"></div>
+        <div class="controllers">
+            <img id="backward" class="ctrl" src="backward.png" alt="">
+            <img id="pause" class="ctrl" src="pause.png" alt="">
+            <img id="forward" class="ctrl" src="forward.png" alt="">
+            <div class="clock"></div>
+            <img src="./timer.png" alt="" class="timer-icon">
+        </div>
+       
+        <iframe id='d' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSection894e634e863a3d4a29ed' frameborder='0'></iframe>
+        <iframe id='c' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSection' frameborder='0'></iframe>
+        <iframe id='b' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSectiona6f995f35b2e26bd40f0' frameborder='0'></iframe>
+        <iframe id='a' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSectionbeb142b90091e4b74cc4' frameborder='0'></iframe>
+        <div class="plano-de-fundo">
+            <div class="iframe-container">
+                <iframe id='e' src='https://esigportal2.recife.pe.gov.br/portal/apps/dashboards/a70b013c87494ae180c9b01887ae22f7' frameborder='0'></iframe> 
+            </div>
+        </div>
     </div>
-   
-    <iframe id='d' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSection894e634e863a3d4a29ed' frameborder='0'></iframe>
-    <iframe id='c' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSection' frameborder='0'></iframe>
-    <iframe id='b' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSectiona6f995f35b2e26bd40f0' frameborder='0'></iframe>
-    <iframe id='a' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSectionbeb142b90091e4b74cc4' frameborder='0'></iframe>
-    <iframe id='e' src='https://esigportal2.recife.pe.gov.br/portal/apps/dashboards/a70b013c87494ae180c9b01887ae22f7' frameborder='0'></iframe> 
+  
     
     <script>
         const clk = document.querySelector('.clock')
@@ -295,6 +311,9 @@
         'https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSectionbeb142b90091e4b74cc4&rdl:targetSameWindow=true',
         'https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9bee&pageName=ReportSection3698ba10458c27e3530c&rdl:targetSameWindow=true'
         ]
+        setInterval( () => {
+            window.location.reload()
+        }, 45000)
         */
         
     </script>
