@@ -50,11 +50,9 @@
 
         .clock {
             font-size: 1.2rem;
-            color: #817B7B;
-            position: fixed;
+            color: #FFF;
             z-index: 3;
-            bottom: 13%;
-            left: 2%;
+            margin-left: 20px;
         }
 
         .logo {
@@ -63,14 +61,14 @@
         }
 
         .controllers {
-            position: fixed;
+            display: flex;
+            align-items: center ;
             z-index: 4;
-            bottom: 8%;
-            left: 2%;
-            width: 100px;
+            width: 15%;
             display: flex;
             justify-content: space-between;
             cursor: pointer;
+            margin-left: 20px;
         }
 
         .ctrl {
@@ -81,16 +79,13 @@
         .timer-icon {
             width: 30px;
             height: 30px;
-            position: absolute;
-            left: 70%;
-            bottom: 150%;
         }
 
         .plano-de-fundo {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 75%;
+            width: 95%;
             height: 100%;
             background-image: url(fundo_recife_em_numeros.jpg);
         }
@@ -100,7 +95,7 @@
             justify-content: center;
             align-items: center;
             width: 85%;
-            height: 90%;
+            height: 80%;
         }
 
         .round {
@@ -108,6 +103,21 @@
             height: 100%;
             border-radius: 20px;
             overflow: hidden;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            position: fixed;
+            z-index: 5;
+            bottom: 0;
+            left: 0;
+            background-color: #4174ba;
+            width: 100%;
+            height: 6%;
+            opacity: 0.95;
+            box-shadow: -1px -1px  4px #4174ba;
         }
 
     </style>
@@ -120,16 +130,7 @@
    
 </head>
 <body>
-    <div class="panel">
-        <div class="box"></div>
-        <div class="controllers">
-            <img id="backward" class="ctrl" src="backward.png" alt="">
-            <img id="pause" class="ctrl" src="pause.png" alt="">
-            <img id="forward" class="ctrl" src="forward.png" alt="">
-            <div class="clock"></div>
-            <img src="./timer.png" alt="" class="timer-icon">
-        </div>
-       
+    <div class="panel">     
         <iframe class="ifbi" id='d' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSection894e634e863a3d4a29ed' frameborder='0'></iframe>
         <iframe class="ifbi" id='c' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSection' frameborder='0'></iframe>
         <iframe class="ifbi" id='b' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSectiona6f995f35b2e26bd40f0' frameborder='0'></iframe>
@@ -142,6 +143,15 @@
             </div>
         </div>
     </div>
+    <footer class="footer">
+        <div class="controllers">
+            <img id="backward" class="ctrl" src="backward.png" alt="">
+            <img id="pause" class="ctrl" src="pause.png" alt="">
+            <img id="forward" class="ctrl" src="forward.png" alt="">
+            <div class="clock"></div>
+            <img src="./timer.png" alt="" class="timer-icon">
+        </div>
+    </footer>
   
     
     <script>
