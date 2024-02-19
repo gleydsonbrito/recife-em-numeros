@@ -28,6 +28,10 @@
             left: 0;
         }
 
+        #cop{
+            display: none;
+        }
+
         .container {
             display: flex;
             align-items: flex-start;
@@ -83,19 +87,22 @@
 
         .plano-de-fundo {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            width: 95%;
-            height: 100%;
-            background-image: url(fundo_recife_em_numeros.jpg);
+            background: url(fundo-cop.png) no-repeat top;
+            background-size: cover auto;
+            min-width: 100%;
+            height: 100vh;  
         }
 
         .iframe-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 85%;
-            height: 80%;
+            width: 75%;
+            height: 60%;
+
         }
 
         .round {
@@ -120,6 +127,17 @@
             box-shadow: -1px -1px  4px #4174ba;
         }
 
+        .complemento {
+            display: none;
+            position: relative;
+            top: 12%;
+            width:90%;
+            height: 4%;
+            background-color: #4174ba;
+            opacity: 0.95;
+            box-shadow: 0 0px  4px #4174ba;
+        }
+
     </style>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
@@ -135,13 +153,16 @@
         <iframe class="ifbi" id='c' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSection' frameborder='0'></iframe>
         <iframe class="ifbi" id='b' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSectiona6f995f35b2e26bd40f0' frameborder='0'></iframe>
         <iframe class="ifbi" id='a' src='https://app.powerbi.com/reportEmbed?reportId=efae84e3-29a8-42a5-bf64-e71723eeda4d&autoAuth=true&ctid=d43a4298-7bc1-44e8-a0ff-4c043ac4e9be&pageName=ReportSectionbeb142b90091e4b74cc4' frameborder='0'></iframe>
-        <div class="plano-de-fundo" >
-            <div class="iframe-container" id="cop">
+       
+        <div class="plano-de-fundo">
+            <div class="iframe-container"  id="cop">
                 <div class="round">
                     <iframe class="ifbi"  src='https://esigportal2.recife.pe.gov.br/portal/apps/dashboards/a70b013c87494ae180c9b01887ae22f7' frameborder='0'></iframe> 
                 </div>
             </div>
+            <div class="complemento"></div>
         </div>
+        
     </div>
     <footer class="footer">
         <div class="controllers">
@@ -156,6 +177,7 @@
     
     <script>
         const clk = document.querySelector('.clock')
+        const complemento = document.querySelector('.complemento')
         
         let counter = 20
 
@@ -173,6 +195,12 @@
                     next = document.querySelector(`#${id[0]}`)
                     next.style.display = 'block'
                 }
+
+            if (index == 4){
+                complemento.style.display = 'block'
+            } else {
+                complemento.style.display = 'none'
+            }
 
             clk.innerHTML = counter > 9 ? `0:${counter}` : `0:0${counter}`
             counter--
@@ -209,7 +237,7 @@
             index--
         }
 
-        function goToFinal() {
+        function goToLastPage() {
             current = document.querySelector(`#${id[index]}`)  
             current.style.display = 'none'
             next = document.querySelector(`#${id[id.length-1]}`)
@@ -240,7 +268,7 @@
         const backwardBtn = document.querySelector('#backward')
         backwardBtn.addEventListener('click', e => {
             if(isFirstPosition()) {
-                goToFinal()
+                goToLastPage()
                 counter = 20
             } else {
                 previousPage()
