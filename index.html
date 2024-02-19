@@ -175,8 +175,7 @@
     
     <script>
         const clk = document.querySelector('.clock')
-        const complemento = document.querySelector('.complemento')
-        
+       
         let counter = 20
 
         const id = ['a', 'b', 'c', 'd', 'cop']
@@ -193,12 +192,6 @@
                     next = document.querySelector(`#${id[0]}`)
                     next.style.display = 'block'
                 }
-
-            if (index == 4){
-                complemento.style.display = 'block'
-            } else {
-                complemento.style.display = 'none'
-            }
 
             clk.innerHTML = counter > 9 ? `0:${counter}` : `0:0${counter}`
             counter--
